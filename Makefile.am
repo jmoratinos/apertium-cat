@@ -10,6 +10,7 @@ BASENAME=apertium-$(LANG1)
 VAR1=#deixar en blanc
 VAR2=_valencia_gva
 VAR3=_valencia_uni
+VAR4=_balear
 
 TARGETS_COMMON =			\
 	$(LANG1)$(VAR1).automorf.bin		\
@@ -17,10 +18,12 @@ TARGETS_COMMON =			\
 	$(LANG1)$(VAR1).autogen.bin		\
 	$(LANG1)$(VAR2).autogen.bin		\
 	$(LANG1)$(VAR3).autogen.bin		\
+	$(LANG1)$(VAR4).autogen.bin		\
 	$(LANG1)$(VAR1).autogen.att.gz		\
 	$(LANG1)$(VAR1).autopgen.bin		\
 	$(LANG1)$(VAR2).autopgen.bin		\
 	$(LANG1)$(VAR3).autopgen.bin		\
+	$(LANG1)$(VAR4).autopgen.bin		\
 	$(LANG1)$(VAR1).rlx.bin
 	
 # Use this goal for creating .deps, otherwise make -j2 will give problems:
@@ -46,6 +49,10 @@ $(LANG1)$(VAR1).automorf.bin: $(BASENAME).$(LANG1).dix
 	apertium-validate-dictionary $<
 	python genvdix.py val_uni $< >$@
 
+.deps/$(BASENAME).$(LANG1).bal.dix: $(BASENAME).$(LANG1).dix .deps/.d
+	apertium-validate-dictionary $<
+	python genvdix.py bal $< >$@
+
 
 $(LANG1)$(VAR1).autogen.bin: .deps/$(BASENAME).$(LANG1).cat.dix
 	apertium-validate-dictionary $<
@@ -58,6 +65,10 @@ $(LANG1)$(VAR2).autogen.bin: .deps/$(BASENAME).$(LANG1).val_gva.dix
 $(LANG1)$(VAR3).autogen.bin: .deps/$(BASENAME).$(LANG1).val_uni.dix
 	apertium-validate-dictionary $<
 	lt-comp -v val_uni rl $< $@ $(BASENAME).$(LANG1).acx
+
+$(LANG1)$(VAR4).autogen.bin: .deps/$(BASENAME).$(LANG1).bal.dix
+	apertium-validate-dictionary $<
+	lt-comp -v bal rl $< $@ $(BASENAME).$(LANG1).acx
 
 $(LANG1)$(VAR1).autogen.att.gz: $(LANG1).autogen.bin
 	lt-print $< | gzip -9 -c -n > $@
@@ -73,6 +84,9 @@ $(LANG1)$(VAR2).autopgen.bin: $(BASENAME).post-$(LANG1).dix
 
 $(LANG1)$(VAR3).autopgen.bin: $(BASENAME).post-$(LANG1).dix
 	lt-comp -a val_uni lr $< $@
+
+$(LANG1)$(VAR4).autopgen.bin: $(BASENAME).post-$(LANG1).dix
+	lt-comp -a bal lr $< $@
 
 ###############################################################################
 ## Disambiguation rules

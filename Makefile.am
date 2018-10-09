@@ -23,7 +23,8 @@ TARGETS_COMMON =			\
 	$(LANG1)$(VAR1).autopgen.bin		\
 	$(LANG1)$(VAR2).autopgen.bin		\
 	$(LANG1)$(VAR3).autopgen.bin		\
-	$(LANG1)$(VAR4).autopgen.bin		\
+	$(LANG1)$(VAR1).autopgen-diacritics-vells.bin		\
+	$(LANG1)$(VAR1).autopgen-diacritics-nous.bin		\
 	$(LANG1)$(VAR1).rlx.bin
 	
 # Use this goal for creating .deps, otherwise make -j2 will give problems:
@@ -88,6 +89,12 @@ $(LANG1)$(VAR3).autopgen.bin: $(BASENAME).post-$(LANG1).dix
 $(LANG1)$(VAR4).autopgen.bin: $(BASENAME).post-$(LANG1).dix
 	lt-comp -a bal lr $< $@
 
+$(LANG1)$(VAR1).autopgen-diacritics-vells.bin: $(BASENAME).post-diacritics-vells.dix
+	lt-comp -a cat lr $< $@
+
+$(LANG1)$(VAR1).autopgen-diacritics-nous.bin: $(BASENAME).post-diacritics-nous.dix
+	lt-comp -a cat lr $< $@
+
 ###############################################################################
 ## Disambiguation rules
 ###############################################################################
@@ -102,6 +109,8 @@ EXTRA_DIST=$(BASENAME).$(LANG1).dix		\
 		$(BASENAME).$(LANG1).acx	\
 		$(BASENAME).$(LANG1).rlx	\
 		$(BASENAME).post-$(LANG1).dix	\
+		$(BASENAME).post-diacritics-vells.dix	\
+		$(BASENAME).post-diacritics-nous.dix	\
 		$(LANG1).prob			\
 		genvdix.py 			\
 		modes.xml
@@ -134,6 +143,8 @@ install-data-local: install-modes
 	$(INSTALL_DATA) $(BASENAME).$(LANG1).dix $(DESTDIR)$(apertium_cat_srcdir)
 	$(INSTALL_DATA) $(BASENAME).$(LANG1).rlx $(DESTDIR)$(apertium_cat_srcdir)
 	$(INSTALL_DATA) $(BASENAME).post-$(LANG1).dix $(DESTDIR)$(apertium_cat_srcdir)
+	$(INSTALL_DATA) $(BASENAME).post-diacritics-vells.dix $(DESTDIR)$(apertium_cat_srcdir)
+	$(INSTALL_DATA) $(BASENAME).post-diacritics-nous.dix $(DESTDIR)$(apertium_cat_srcdir)
 
 CLEANFILES = $(TARGETS_COMMON)
 clean-local:

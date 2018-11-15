@@ -23,6 +23,7 @@ TARGETS_COMMON =			\
 	$(LANG1)$(VAR1).autopgen.bin		\
 	$(LANG1)$(VAR2).autopgen.bin		\
 	$(LANG1)$(VAR3).autopgen.bin		\
+	$(LANG1)$(VAR4).autopgen.bin		\
 	$(LANG1)$(VAR1).autopgen-diacritics-vells.bin		\
 	$(LANG1)$(VAR1).autopgen-diacritics-nous.bin		\
 	$(LANG1)$(VAR1).rlx.bin

@@ -37,6 +37,7 @@ LIST unknown = ("\\*.*"r) ;
 LIST unknownMajIni = ("\\*[A-ZÀÁÈÉíÒÓÚÜÇ].*"r) ;
 LIST MajIni = ("<[A-ZÀÁÈÉíÒÓÚÜÇ].*>"r) ;
 LIST MinIni = ("<[a-zàáèéìíòóùúçñ].*>"r) ;
+LIST MajIni2 = ("<[A-ZÀÁÈÉÍÌÒÓÚÜÇ][a-zàáèéìíòóùúïüçñ·]+.*>"r) ;
 LIST segles_num_romans = ("[IVX][IVX]*"r) ;
 
 SET CM = (cm) OR (lpar) OR (rpar) OR ("<;>") ;
@@ -123,6 +124,8 @@ SET Persones = ("pare") OR ("mare") OR ("avi") OR ("germà") OR ("fill") OR ("on
 #SET Persones2 = ("pare") ("mare") ("avi") ;
 SET Dignitat = ("president") OR ("governador") OR ("emperador") OR ("rei") OR ("príncep") OR ("comte") OR ("marquès") OR ("duc")
 	OR ("arxiduc") OR ("infant") OR ("bisbe") ;
+SET DiaSetmana = ("dilluns") OR ("dimarts") OR ("dimecres") OR ("dijous") OR ("divendres") OR ("dissabte") OR ("diumenge");
+
 
 # adj que són ambiguts amb el pp de verbs intransitius
 SET PP_Intr_Adj = ("controvertit") ;
@@ -212,13 +215,79 @@ SET NomPropiComu = ("Sala") OR ("Guerra") OR ("Costa") OR ("Fons") OR ("Guàrdia
 
 SECTION
 
-
+#
 # Diacrítics de la nova ortografia IEC 2017
+#
 
 SELECT:dona_v Vblex IF (0 ("donar")) (-1 Pro) (-2 Pro) (NOT -2 ("<en>"i));
 SELECT:dona_v Vblex IF (0 ("<dona>"i)) (-1 Pro) (NOT -1 ("<la>"i)) (NOT -1 ("<en>"i));
 SELECT:dona_v Vblex IF (0 ("<dones>"i)) (-1 Pro) (NOT -1 ("<les>"i)) (NOT -1 ("<en>"i));
 SELECT:dona_n N IF (0 ("dona")) (NOT -1 Cnj);
+
+# feu/féu, veu/véu. Desambigua els casos clars: es feu>féu,  t'ho feu>féu. 
+SELECT:feu (ifi) IF (0 (vblex ifi p3 sg)) (0 (vblex pri p2 pl)) (-1/* ("es") OR ("et")); 
+REMOVE:feu (ifi) IF (0 (vblex ifi p3 sg)) (0 (vblex pri p2 pl));
+REMOVE:veu (ifi) IF (0 (vblex ifi p3 sg)) (0 (vblex pri p3 sg));
+#bota/bóta: cal mirar el context
+SELECT ("bóta") IF (0 ("bóta")) (0*/* ("vi"));
+SELECT ("bota") IF (0 ("bota"));
+#ós/os
+SELECT ("ós") IF (0 ("ós")) (1 ("bru") OR ("gris") OR ("grizzly"));
+SELECT ("ós") IF (0 ("ós")) (1 ("de")) (2 Det) (3 ("caverna"));
+SELECT ("os") IF (0 ("os"));
+#fora/fóra TODO: caldrà fer tota la desambiguació que es fa en castellà per a "fuera"
+#Per a la traducció en castellà no és problema perquè en castellà també coincidex el verb i l'adverbi
+#En altres idiomes sí que hi ha problemes si no es desambigua bé
+SELECT (cni) IF (0 ("<fora>"i) OR ("<fóra>"i)) (1 A) (-1 >>>); #Fóra difícil=Seria difícil
+REMOVE Ser IF (0 ("<fora>"i));
+#molta/mòlta. Cal mirar el context. En principi s'ignora.
+REMOVE ("mòlta") IF (0 ("molt"));
+#molt/mòlt
+SELECT PP IF (0 ("molt")) (-1 Vbhaver) (NOT -1 ("hi"));
+REMOVE PP IF (0 ("molt"));
+#mora/móra. Cal mirar el context. En principi s'ignora.
+REMOVE ("móra") IF (0 ("mora"));
+#véns,vénen/vens,venen
+SELECT ("vendre") IF (0 ("vendre")) (1 Pos OR N);
+SELECT ("vendre") IF (0 ("vendre")) (1 Det) (NOT 2 DiaSetmana);
+SELECT ("venir") IF (0 ("venir")) (0 ("vendre"));
+# revendre (més comú que revenir)
+SELECT ("revendre") IF (0 ("revenir")) (0 ("revendre"));
+#ves/vés
+REMOVE ("anar") IF (0 ("<ves>"i)) (1 ("per")) (2 ("on"));
+SELECT ("anar") IF (0 ("<ves>"i));
+#res/rés. Dubtós: el res > rés ?
+SELECT ("rés") IF (0 ("res")) (1/* ("de")) (2 Det) (3 ("hora") + FemPl);
+SELECT ("rés") IF (0 ("res")) (1/* ("de")) (2* ("parenostre") OR ("avemaria") OR ("rosari") OR ("oració") OR ("pregària"));
+SELECT ("res") IF (0 ("res"));
+#seu/sèu.
+SELECT ("sèu") IF (0 ("sèu") + MascSg) (-1 Prep) (-2* ("untar") OR ("candela"));
+REMOVE ("sèu") IF (0 ("seu"));
+#net/nét
+REMOVE ("nét") IF (0 ("net")) (-1 ("<€>") OR ("mantener") OR ("IVA"));
+REMOVE ("nét") IF (0 ("net")) (1 ("patrimonial") OR ("aigua") OR ("contribució") OR ("memòria"));
+REMOVE ("nét") IF (0 ("net")) (1 ("de")) (2 ("cor"));
+SELECT N IF (0 ("nét") + MascSg ) (-1 MascSg) (-1 Pos);
+SELECT N IF (0 ("nét") + MascPl ) (-1 MascPl) (-1 Pos);
+SELECT N IF (0 ("nét") + FemSg ) (-1 FemSg) (-1 Pos);
+SELECT N IF (0 ("nét") + FemPl ) (-1 FemPl) (-1 Pos);
+SELECT N IF (0 ("nét")) (-1 (ord) OR ("darrer") OR ("últim")) (-2 ("el"));
+SELECT N IF (0 ("nét")) (-1 Num OR ("un") OR ("més") OR ("menys")) (-2 ("tenir"));
+SELECT N IF (0 ("nét")) (-1 ("el")) (1 ("de"));
+SELECT N IF (0 ("nét")) (1 ("de")) (2 MajIni2) (NOT -1 N) (NOT -1 ("més") OR ("menys"));
+SELECT N IF (0 ("nét")) (-1 ("un") OR ("algun")) (1 ("de") OR (pos));
+SELECT N IF (0 ("nét")) (-1 Copula) (1C ("de")) (2C ("el"));
+SELECT N IF (0 ("nét")) (-1 Copula) (1/* ("de") + ("el"));
+SELECT N IF (0 ("nét")) (-1 >>> OR CM) (1/* ("de") + ("el") + Sg);
+SELECT N IF (0 ("nét")) (-1 >>> OR CM) (1 ("de")) (2 ("el") + Sg);
+SELECT N IF (0 ("nét")) (-1 CnjCoo OR CM) (-2 ("fill") OR ("avi") OR ("pare") OR ("mare"));
+SELECT N IF (0 ("nét")) (1 CnjCoo OR CM) (2 ("fill") OR ("avi") OR ("pare") OR ("mare"));
+SELECT N IF (0 ("nét")) (-1/* ("de") + ("el")) (-2 ("un") OR ("algun"));
+SELECT N IF (0 ("nét")) (-1 ("el")) (-2 ("de")) (-3 ("un") OR ("algun"));
+SELECT N IF (0 ("nét")) (-1 ("algun de"));
+REMOVE ("nét") IF (0 ("net")); #Al final, prioritat al sistema tradicional!
+
+## FINAL Diacrítics nous
 
 #SELECT:apellido0 (cog) IF (0 (cog)) (1 ("i"i)) (2 (cog));   # Navarro i García
 #SELECT:apellido1 (cog) IF (0 (cog)) (-1 ("i"i)) (-2 (cog));
@@ -230,7 +299,7 @@ REMOVE:marina NP IF (0 ("Marina")) (1 ("reial") OR ("mercant") OR ("britànic"))
 REMOVE:costa NP IF (0 ("Costa")) (1 ("blau") OR ("brau") OR ("blanc")); 
 REMOVE:li_nonompropi NP IF (0 ("Li")) (1 Verb + Pers) (NOT -1 MinIni) (NOT -1 (ant) OR (cog) OR unknownMajIni); 
 
-# Per a evitar la traducicó de cognoms
+# Per a evitar la traducció de cognoms
 # Posa com a lema la forma de la paraula marcada amb *
 # Amb els adjectius hi ha més risc d'error (!)
 SUBSTITUTE:nom_propi1 (".*"r) ("\\*$1"v) TARGET ("<(.*)>"r) IF (-1C (ant) OR (cog)) (0C Verb OR N OR A) (0 MajIni) (NOT 0 segles_num_romans) (NOT -1 ("Al")) ; 
@@ -262,6 +331,10 @@ REMOVE Cog IF (-1 DetDef) (0 Cog) ;
 REMOVE Cog IF (-1 DetInd) (0 Cog) ;
 REMOVE Ant IF (-1 DetDef) (0 Ant) ;
 REMOVE Ant IF (-1 DetInd) (0 Ant) ;
+
+#acrónimos
+LIST AllUpper = ("<[A-Z]+>"r) ;
+SELECT:acronim (acr) IF (0 AllUpper);
 
 SELECT Ant IF (0 Ant) (1C Ant) ;
         # Rosa Maria
@@ -329,6 +402,9 @@ SELECT Verb (-1 Rel OR CnjSub) (0C Verb OR N) (1 Det) (2C N) ;
 SELECT Verb (-1 Rel OR CnjSub) (0C Verb OR N) (1 Det) (2 A) (3C N) ;
 SELECT Verb (-1 Rel OR CnjSub) (0C Verb OR N) (1 Det) (2A A) (3 N) ;
 	# la dona que estima les flors
+
+REMOVE N (-1 ("anar")) (0 N) (0 Ser) (1 PP) ;
+	# va ser entregat
 
 SELECT Vbhaver (-1 ("hi")) (0 Vbhaver) (NOT 1 PP) ;
 
@@ -410,6 +486,17 @@ REMOVE PIS (0 ("<foren>")) (1 PP) ;
 #REMOVE:adj_ger A IF (0 A) (0 Ger) (NOT -1/* Det OR Prep);
 #REMOVE:nom_ger N IF (0 N) (0 Ger) (NOT -1/* Det OR Prep);
 
+# pronom + verb (És estrany que falli el tagger!)
+SELECT:pronom_verb Verb IF (-1 ("es"i)) (-1 (prn pro)) (0 (vblex p3)); #s'arreplega
+# 3a persona, no 1a
+SELECT:pronom_verb (p3) IF (-1 ("es"i)) (-1 (prn pro)) (0 (vblex p3)); #s'implante
+
+# deure
+REMOVE:deure_vbmod Vbmod IF (0 ("deure")) (NOT 1 Inf);
+
+# arreplega V/N: TODO: generalitzar
+SELECT:arreplega Verb IF (0 ("entrega") OR ("arreplega")) (1 Det OR ("que")); 
+
 #
 # comparaciones
 #
@@ -425,6 +512,32 @@ SELECT:ger Ger IF (-1 ("estar"i) OR ("seguir"i) OR ("continuar"i) OR ("acabar"i)
 #
 # PALABRAS PARTICULARES
 #
+
+
+SELECT Vblex IF (0 ("mancar")) (1 CnjSub OR CnjAdv OR Rel);
+
+SELECT ("a fi de") IF (0 ("a fi de")) (1 Inf);
+REMOVE ("a fi de") IF (0 ("a fi de")) (NOT 1 Inf);
+
+#recolzada
+REMOVE:recolzada N IF (0 ("recolzada")) (NOT -1 Det + Fem);
+REMOVE:recolzada N IF (0 ("recolzada")) (1 ("per"));
+
+#estret, assedegat (no participi)
+REMOVE:estret PP IF (0 ("estret") OR ("assedegat"))  (NOT -1 Vbhaver);
+
+#el vals (per què falla el tagger?)
+REMOVE:n_sg_pl (n pl) IF (0 N + Pl) (0 N + Sg) (-1 Det + Sg);
+
+#seguit
+SELECT:seguit_n N IF (0 ("seguit")) (-1 Det + MascSg) (1 ("de")) (2 N + Pl);
+REMOVE:seguit_n N IF (0 ("seguit"));
+
+SELECT:escaient A IF (0 ("escaient"));
+REMOVE:compondre ("compostar") IF (0 ("compostar")) (0 ("compondre"));
+
+SELECT:nus A IF (0 ("<nus>"i)) (-2 ("model")) (-1 ("de")) (NOT 1 A + MascSg);
+REMOVE:nus A IF (0 ("<nus>"i)) (1 N + Fem OR N + Sg); #noms de lletres: nus B-10, més casos?
 
 SELECT:que PreAdv IF (0 ("que")) (1C A) (NOT 2 N OR A) (NOT 1 ("junt")) (-1 >>>); #(NOT -1 ("més") OR ("menys") OR ("manco")); 
 REMOVE:que PreAdv IF (0 ("que")); #(Excepcions?)
@@ -561,6 +674,7 @@ SELECT Promes IF (0 Promes OR Promes) (-1 Pos) ;
 SELECT Promesa IF (0 Promes OR Promes) (NOT -1 Pos) ;
 
 SELECT Tenir IF (0 Tens OR Tenir) (NOT -1 Det) (1 N) ;
+SELECT Tenir IF (0 Tens OR Tenir) (-1 Fem OR MascPl) ;
 
 SELECT Encara IF (-1 Vbhaver) (0 Encara OR Encarar) ;
 	# hi ha encara alguns antics alumnes

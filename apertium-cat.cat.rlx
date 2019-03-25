@@ -58,6 +58,7 @@ LIST Inf = (inf) ;
 LIST PP = (pp) ;
 LIST PRS = (prs) ;
 LIST PIS = (pis) ;
+LIST IFI = (ifi) ;
 LIST Ger = (ger) ;
 
 LIST P1 = (p1) ;
@@ -243,7 +244,7 @@ REMOVE Ser IF (0 ("<fora>"i));
 #molta/mòlta. Cal mirar el context. En principi s'ignora.
 REMOVE ("mòlta") IF (0 ("molt"));
 #molt/mòlt
-SELECT PP IF (0 ("molt")) (-1 Vbhaver) (NOT -1 ("hi"));
+SELECT PP IF (0 ("molt")) (-1 Vbhaver) (NOT -2 ("hi"));
 REMOVE PP IF (0 ("molt"));
 #mora/móra. Cal mirar el context. En principi s'ignora.
 REMOVE ("móra") IF (0 ("mora"));
@@ -332,6 +333,8 @@ REMOVE Cog IF (-1 DetInd) (0 Cog) ;
 REMOVE Ant IF (-1 DetDef) (0 Ant) ;
 REMOVE Ant IF (-1 DetInd) (0 Ant) ;
 
+REMOVE Verb IF (0 ("IX")) ;
+
 #acrónimos
 LIST AllUpper = ("<[A-Z]+>"r) ;
 SELECT:acronim (acr) IF (0 AllUpper);
@@ -405,6 +408,9 @@ SELECT Verb (-1 Rel OR CnjSub) (0C Verb OR N) (1 Det) (2A A) (3 N) ;
 
 REMOVE N (-1 ("anar")) (0 N) (0 Ser) (1 PP) ;
 	# va ser entregat
+
+REMOVE N (-1C ("anar")) (0 N) (0 Ser) ;
+	# va ser
 
 SELECT Vbhaver (-1 ("hi")) (0 Vbhaver) (NOT 1 PP) ;
 
@@ -480,6 +486,7 @@ SELECT PRS (*-1 ("ser") LINK 1 Adv_PreAdv LINK 1 A LINK 1 ("que")) (0C Verb) (NO
 
 REMOVE PIS (0 ("<foren>")) (1 PP) ;
 	# que foren capturats
+SELECT IFI (0 ("<Foren>")) (-1 >>>) ;
 
 # adjectiu/nom i gerundi (filtrant, comptant, alternant, impugnant, cantant...)
 # Desactivat perquè és molt més complicat.
@@ -524,7 +531,13 @@ REMOVE:recolzada N IF (0 ("recolzada")) (NOT -1 Det + Fem);
 REMOVE:recolzada N IF (0 ("recolzada")) (1 ("per"));
 
 #estret, assedegat (no participi)
-REMOVE:estret PP IF (0 ("estret") OR ("assedegat"))  (NOT -1 Vbhaver);
+REMOVE:estret PP IF (0 ("estret") OR ("assedegat")) (NOT -1 Vbhaver);
+
+#tractat (no participi)
+#REMOVE:tractat PP IF (0 ("estret") OR ("tractat") OR ("assedegat")) (NOT -1 Vbhaver);
+	# no funciona: bits de manera simultània
+REMOVE PP IF (0 ("tractat")) (1 ("de")) (2 ("pau") OR ("amistat") OR NP OR unknownMajIni) (NOT -1 Vbhaver);
+SELECT N IF (-2 ("tractat")) (-1 ("de")) (2 ("pau"));
 
 #el vals (per què falla el tagger?)
 REMOVE:n_sg_pl (n pl) IF (0 N + Pl) (0 N + Sg) (-1 Det + Sg);
@@ -1229,6 +1242,9 @@ SELECT Det IF (-2C Verb) (-1 Adv) (0 ("cap")) (1 N) (1 A) (3 Barrera_Final_Estri
 	# no hi ha pràcticament cap dubte que
 SELECT Pron IF (NOT -1 Det OR A) (0 ("cap")) (1C Verb) ;
 	# però cap ha estat acceptada
+
+REMOVE (f) IF (0 ("cap")) (NOT -1 (f)) (NOT 1 (f));
+REMOVE (m) IF (0 ("cap")) (0 FemPl) (-1 FemPl); 
 
 SELECT PreAdv IF (-1 Ser) (0 ("molt")) (1C A OR PP) ;
 	# és molt variat

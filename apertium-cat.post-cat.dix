@@ -210,9 +210,9 @@
       <e>
         <i>y</i>
       </e>
-      <e>
+      <!--<e>
         <i>z</i>
-      </e>
+      </e>-->
     </pardef>
 
     <pardef n="consonant_menys_d">
@@ -233,6 +233,9 @@
       </e>
       <e>
         <i>s</i>
+      </e>
+      <e>
+        <i>z</i>
       </e>
     </pardef>
 
@@ -273,6 +276,8 @@
       <e><i>Heidelberg</i></e>
       <e><i>Hitchcock</i></e>
       <e><i>Hawaii</i></e>
+      <e><i>Heathrow</i></e>
+      <e><i>Helmut</i></e>
       <e><i>Hezbollah</i></e>
       <e><i>Huelva</i></e> 
       <e><i>Huévar</i></e> 
@@ -286,6 +291,8 @@
       <e><i>hàndicap</i></e>
       <e><i>handicap</i></e>
       <e><i>hòlding</i></e>
+      <e><i>Haider</i></e>
+      <e><i>Halifax</i></e>
     </pardef>
 
 
@@ -2197,12 +2204,12 @@
         </p>
         <par n="consonant"/>
       </e>
-      <e>
+      <!--<e>
         <p>
           <l><b/>entre<b/></l>
           <r>de<b/></r>
         </p>
-      </e>
+      </e>-->
       <e>
         <p>
           <l><b/></l>
@@ -3294,13 +3301,13 @@
           <r>ho</r>
         </p>
       </e> 
-      <e>
+      <!--<e>
         <p>
           <l><a/>ex<b/></l>
           <r>ex</r>
         </p>
         <par n="consonant"/>
-      </e>
+      </e>-->
       <e>
         <p>
           <l><a/>mitjan<b/><a/>el<b/></l>

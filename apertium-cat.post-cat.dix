@@ -626,6 +626,7 @@
       <e><i>usa</i></e>
       <e><i>URSS</i></e>
       <e><i>UVI</i></e>
+      <e><i>una</i></e>
 
       <e>
         <i>a</i>
@@ -795,6 +796,7 @@
       <e><i>incas</i></e>
       <e><i>incau</i></e>
       <e><i>urpad</i></e>
+      <e><i>unan</i></e>
       <e><i>usad</i></e>
       <e><i>usab</i></e>
       <e><i>usat</i></e>
@@ -2876,6 +2878,20 @@
       </e>
       <e>
         <p>
+          <l><b/><a/>el<b/></l>
+          <r>us<b/>l'</r>
+        </p>
+        <par n="vocal_general"/>
+      </e>
+      <e>
+        <p>
+          <l><b/><a/>la<b/></l>
+          <r>us<b/>l'</r>
+        </p>
+        <par n="vocal_general"/>
+      </e>
+      <e>
+        <p>
           <l><b/><a/></l>
           <r>us<b/></r>
         </p>
@@ -2897,6 +2913,20 @@
           <r>ens<b/></r>
         </p>
         <par n="no_apostrofa"/>
+      </e>
+      <e>
+        <p>
+          <l><b/><a/>el<b/></l>
+          <r>ens<b/>l'</r>
+        </p>
+        <par n="vocal_general"/>
+      </e>
+      <e>
+        <p>
+          <l><b/><a/>la<b/></l>
+          <r>ens<b/>l'</r>
+        </p>
+        <par n="vocal_general"/>
       </e>
       <e>
         <p>

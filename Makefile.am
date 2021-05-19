@@ -51,7 +51,7 @@ $(LANG1)$(VAR1).automorf.bin: $(BASENAME).$(LANG1).dix $(BASENAME).$(LANG1).acx
 
 .deps/$(BASENAME).$(LANG1).bal.dix: $(BASENAME).$(LANG1).dix .deps/.d
 	apertium-validate-dictionary $<
-	python genvdix.py bal $< >$@
+	apertium-genvdix bal $< >$@
 
 
 $(LANG1)$(VAR1).autogen.bin: .deps/$(BASENAME).$(LANG1).cat.dix

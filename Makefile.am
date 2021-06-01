@@ -53,7 +53,7 @@ $(LANG1)$(VAR1).automorf.bin: .deps/$(BASENAME).$(LANG1).dix $(BASENAME).$(LANG1
 	apertium-validate-dictionary $<
 	apertium-genvdix val_uni $< >$@
 
-.deps/$(BASENAME).$(LANG1).bal.dix: $(BASENAME).$(LANG1).dix .deps/.d
+.deps/$(BASENAME).$(LANG1).bal.dix: .deps/$(BASENAME).$(LANG1).dix .deps/.d
 	apertium-validate-dictionary $<
 	apertium-genvdix bal $< >$@
 
